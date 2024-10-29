@@ -1,2 +1,3 @@
 PhotosApp.db
 .photos/*.new.*
+*package-lock.json
