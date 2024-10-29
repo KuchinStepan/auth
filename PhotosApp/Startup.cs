@@ -12,6 +12,7 @@ using PhotosApp.Clients;
 using PhotosApp.Clients.Models;
 using PhotosApp.Data;
 using PhotosApp.Models;
+using PhotosApp.Services;
 using Serilog;
 
 namespace PhotosApp
@@ -49,6 +50,8 @@ namespace PhotosApp
             //    o.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=PhotosApp;Trusted_Connection=True;"));
 
             services.AddScoped<IPhotosRepository, LocalPhotosRepository>();
+            
+            services.AddScoped<IPasswordHasher<PhotosAppUser>, SimplePasswordHasher<PhotosAppUser>>();
 
             services.AddAutoMapper(cfg =>
             {
