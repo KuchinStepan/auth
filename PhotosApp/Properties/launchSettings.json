@@ -3,7 +3,10 @@
   "profiles": {
     "PhotosApp": {
       "commandName": "Project",
-      "launchBrowser": true
+      "launchBrowser": true,
+      "environmentVariables": {
+        "codegen_trace": "1"
+      }
     }
   }
 }
