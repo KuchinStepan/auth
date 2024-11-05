@@ -41,7 +41,7 @@
                                 <a class="nav-link" asp-area="" asp-controller="Photos" asp-action="AddPhoto">Добавить фото</a>
                             </li>
                         }
-                        @if (User.IsInRole("Dev") && (await AuthorizationService.AuthorizeAsync(User, "Dev")).Succeeded)
+                        @if (User.IsInRole("Dev") || (await AuthorizationService.AuthorizeAsync(User, "Dev")).Succeeded)
                         {
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Dev" asp-action="Decode" title="Decode">Decode</a>
