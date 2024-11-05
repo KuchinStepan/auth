@@ -106,6 +106,11 @@ namespace PhotosApp.Areas.Identity
                 
                 services.AddAuthorization(options =>
                 {
+                    options.DefaultPolicy = new AuthorizationPolicyBuilder(
+                            JwtBearerDefaults.AuthenticationScheme,
+                            IdentityConstants.ApplicationScheme)
+                        .RequireAuthenticatedUser()
+                        .Build();
                     options.AddPolicy(
                         "Beta",
                         policyBuilder =>
@@ -119,6 +124,14 @@ namespace PhotosApp.Areas.Identity
                         {
                             policyBuilder.RequireAuthenticatedUser();
                             policyBuilder.RequireClaim("subscription", "paid");
+                        });
+                    options.AddPolicy(
+                        "Dev",
+                        policyBuilder =>
+                        {
+                            policyBuilder.RequireRole("Dev");
+                            policyBuilder.AddAuthenticationSchemes(
+                                JwtBearerDefaults.AuthenticationScheme, IdentityConstants.ApplicationScheme);
                         });
                     options.AddPolicy(
                         "MustOwnPhoto",
