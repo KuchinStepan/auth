@@ -1,5 +1,7 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using PhotosApp.Areas.Identity.Data;
 using PhotosApp.Services;
 using PhotosApp.Services.Authorization;
@@ -62,6 +65,29 @@ namespace PhotosApp.Areas.Identity
                         context.Configuration["SimpleEmailSender:UserName"],
                         context.Configuration["SimpleEmailSender:Password"]
                     ));
+                
+                services.AddAuthentication()
+                    .AddJwtBearer(options =>
+                    {
+                        options.RequireHttpsMetadata = false;
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = false,
+                            ValidateAudience = false,
+                            ValidateLifetime = true,
+                            ClockSkew = TimeSpan.Zero,
+                            ValidateIssuerSigningKey = true,
+                            IssuerSigningKey = TemporaryTokens.SigningKey,
+                        };
+                        options.Events = new JwtBearerEvents
+                        {
+                            OnMessageReceived = c =>
+                            {
+                                c.Token = c.Request.Cookies["TemporaryToken"];
+                                return Task.CompletedTask;
+                            }
+                        };
+                    });
                 
                 services.AddTransient<EntityTicketStore>();
                 services.AddScoped<IAuthorizationHandler, MustOwnPhotoHandler>();
