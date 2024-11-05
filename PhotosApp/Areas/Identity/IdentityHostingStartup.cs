@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using PhotosApp.Areas.Identity.Data;
 using PhotosApp.Services;
 using PhotosApp.Services.Authorization;
@@ -33,8 +35,7 @@ namespace PhotosApp.Areas.Identity
                     .AddErrorDescriber<RussianIdentityErrorDescriber>()
                     .AddPasswordValidator<UsernameAsPasswordValidator<PhotosAppUser>>()
                     .AddEntityFrameworkStores<UsersDbContext>();
-                Console.WriteLine($"ClientId: {context.Configuration["Authentication:Google:ClientId"]}");
-                Console.WriteLine($"ClientSecret: {context.Configuration["Authentication:Google:ClientSecret"]}");
+                
                 services.AddAuthentication()
                     .AddGoogle("Google", options =>
                     {
@@ -50,6 +51,17 @@ namespace PhotosApp.Areas.Identity
                     options.Password.RequireUppercase = false;
                     options.SignIn.RequireConfirmedAccount = false;
                 });
+                
+                services.AddTransient<IEmailSender, SimpleEmailSender>(serviceProvider =>
+                    new SimpleEmailSender(
+                        serviceProvider.GetRequiredService<ILogger<SimpleEmailSender>>(),
+                        serviceProvider.GetRequiredService<IWebHostEnvironment>(),
+                        context.Configuration["SimpleEmailSender:Host"],
+                        context.Configuration.GetValue<int>("SimpleEmailSender:Port"),
+                        context.Configuration.GetValue<bool>("SimpleEmailSender:EnableSSL"),
+                        context.Configuration["SimpleEmailSender:UserName"],
+                        context.Configuration["SimpleEmailSender:Password"]
+                    ));
                 
                 services.AddTransient<EntityTicketStore>();
                 services.AddScoped<IAuthorizationHandler, MustOwnPhotoHandler>();
