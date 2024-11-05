@@ -33,6 +33,14 @@ namespace PhotosApp.Areas.Identity
                     .AddErrorDescriber<RussianIdentityErrorDescriber>()
                     .AddPasswordValidator<UsernameAsPasswordValidator<PhotosAppUser>>()
                     .AddEntityFrameworkStores<UsersDbContext>();
+                Console.WriteLine($"ClientId: {context.Configuration["Authentication:Google:ClientId"]}");
+                Console.WriteLine($"ClientSecret: {context.Configuration["Authentication:Google:ClientSecret"]}");
+                services.AddAuthentication()
+                    .AddGoogle("Google", options =>
+                    {
+                        options.ClientId = context.Configuration["Authentication:Google:ClientId"];
+                        options.ClientSecret = context.Configuration["Authentication:Google:ClientSecret"];
+                    });
                 
                 services.Configure<IdentityOptions>(options =>
                 {
