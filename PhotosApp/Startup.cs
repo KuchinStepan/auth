@@ -76,7 +76,7 @@ namespace PhotosApp
             else
                 app.UseExceptionHandler("/Exception");
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");

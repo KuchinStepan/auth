@@ -33,7 +33,7 @@ namespace PhotosApp.Clients
         {
             var httpClient = new HttpClient();
             // NOTE: Получение информации о сервере авторизации, в частности, адреса token endpoint.
-            var disco = await httpClient.GetDiscoveryDocumentAsync("https://localhost:7001");
+            var disco = await httpClient.GetDiscoveryDocumentAsync("http://localhost:7000");
             if (disco.IsError)
                 throw new Exception(disco.Error);
 

@@ -98,7 +98,7 @@ namespace PhotosService.Controllers
             var relativeUrl = Url.Action(nameof(GetPhotoContent), new {
                 id = photo.Id
             });
-            var url = "https://localhost:6001" + relativeUrl;
+            var url = "http://localhost:6000" + relativeUrl;
             return url;
         }
     }

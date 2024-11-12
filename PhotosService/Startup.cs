@@ -37,7 +37,8 @@ namespace PhotosService
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = "https://localhost:7001";
+                    options.RequireHttpsMetadata = false;
+                    options.Authority = "http://localhost:7000";
                     options.Audience = "photos_service";
                 });
             var connectionString = configuration.GetConnectionString("PhotosDbContextConnection")

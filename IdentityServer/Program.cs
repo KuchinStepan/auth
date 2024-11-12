@@ -53,7 +53,7 @@ namespace IdentityServer
                     // NOTE: Жесткий способ настройки, который сработает в 100% различных IDE.
                     // Для продакшена следует использовать аргументы командной строки,
                     // переменные окружения, файлы конфигурации
-                    webBuilder.UseUrls("https://localhost:7001;http://localhost:7000");
+                    webBuilder.UseUrls("http://localhost:7000");
                     webBuilder.UseEnvironment("Development");
 
                     webBuilder.UseStartup<Startup>();
