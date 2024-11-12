@@ -41,6 +41,11 @@ namespace PhotosApp
             // NOTE: Подключение IHttpContextAccessor, чтобы можно было получать HttpContext там,
             // где это не получается сделать более явно.
             services.AddHttpContextAccessor();
+            services.AddHttpsRedirection(options =>
+            {
+                options.RedirectStatusCode = 307;
+                options.HttpsPort = 5001;
+            });
 
             var connectionString = configuration.GetConnectionString("PhotosDbContextConnection")
                 ?? "Data Source=PhotosApp.db";
@@ -76,7 +81,8 @@ namespace PhotosApp
             else
                 app.UseExceptionHandler("/Exception");
 
-            // app.UseHttpsRedirection();
+            app.UseHsts();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");

@@ -39,6 +39,14 @@ namespace PhotosApp.Areas.Identity
                     .AddPasswordValidator<UsernameAsPasswordValidator<PhotosAppUser>>()
                     .AddEntityFrameworkStores<UsersDbContext>();
                 
+                services.ConfigureExternalCookie(options =>
+                {
+                    options.Cookie.Name = "PhotosApp.Auth.External";
+                    options.Cookie.HttpOnly = true;
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                    options.SlidingExpiration = true;
+                });
+                
                 services.AddAuthentication()
                     //.AddGoogle("Google", options =>
                     //{
@@ -50,6 +58,7 @@ namespace PhotosApp.Areas.Identity
                         displayName: "Google",
                         options =>
                         {
+                            // options.SaveTokens = true;
                             options.Authority = "https://accounts.google.com/";
                             options.ClientId = context.Configuration["Authentication:Google:ClientId"];
                             options.ClientSecret = context.Configuration["Authentication:Google:ClientSecret"];
@@ -109,7 +118,7 @@ namespace PhotosApp.Areas.Identity
                 services.ConfigureApplicationCookie(options =>
                 {
                     var serviceProvider = services.BuildServiceProvider();
-                    options.SessionStore = serviceProvider.GetRequiredService<EntityTicketStore>();
+                    //options.SessionStore = serviceProvider.GetRequiredService<EntityTicketStore>();
                     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                     options.Cookie.Name = "PhotosApp.Auth";
                     options.Cookie.HttpOnly = true;
@@ -144,9 +153,11 @@ namespace PhotosApp.Areas.Identity
                         "Dev",
                         policyBuilder =>
                         {
-                            policyBuilder.RequireRole("Dev");
-                            policyBuilder.AddAuthenticationSchemes(
-                                JwtBearerDefaults.AuthenticationScheme, IdentityConstants.ApplicationScheme);
+                            policyBuilder.RequireAuthenticatedUser();
+                            //policyBuilder.RequireRole("Dev");
+                            //policyBuilder.AddAuthenticationSchemes(
+                            //    JwtBearerDefaults.AuthenticationScheme,
+                            //    IdentityConstants.ApplicationScheme);
                         });
                     options.AddPolicy(
                         "MustOwnPhoto",
